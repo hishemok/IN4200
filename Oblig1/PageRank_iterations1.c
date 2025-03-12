@@ -3,7 +3,26 @@
 #include "math.h"
 
 
+
+void find_dangling_pages (int N, double **hyperlink_matrix, int *dangling_indices, int *is_dangling){
+    for (int j = 0; j < N; j++){
+        double column_sum = 0.0;
+        for (int i = 0; i < N; i++){
+            column_sum += hyperlink_matrix[i][j];
+        }
+        if (column_sum == 0.0 || hyperlink_matrix[j][j] == 1.0){
+            dangling_indices[j] = 1;
+            *is_dangling = 1;
+        }
+        else{
+            dangling_indices[j] = 0;
+        }
+
+    }
+}
+
 void PageRank_iterations1 (int N, double **hyperlink_matrix, double d, double epsilon,double *scores){
+    printf("\n\nPageRank_iterations1\n");
     double *xprev = malloc(N * sizeof(double));
     double *xcurr = malloc(N * sizeof(double));
     
@@ -17,50 +36,53 @@ void PageRank_iterations1 (int N, double **hyperlink_matrix, double d, double ep
         xprev[i] = 1.0 / N;
     }
 
-    double diff;
-    int iteration = 0;
-    while(diff > epsilon){
-        diff = 0.0;
+    int iterations = 0;
+    double diff = 2.0;
+
+    while (diff > epsilon && iterations < 10000){
+        //Find indices of dangling webpages
+        int *dangling_indices = malloc(N * sizeof(int));
+        int is_dangling = 0;
+
+
+        find_dangling_pages(N, hyperlink_matrix, dangling_indices, &is_dangling);
+
+
         double W_prev = 0.0;
-        for (int i = 0; i < N; i++){
-            int is_dangling = 1;
-            for (int j = 0; j < N; j++){
-                if (hyperlink_matrix[j][i] != 0.0){
-                    is_dangling = 0;
-                    break;
+        if (is_dangling == 1){
+            for (int i = 0; i < N; i++){
+                if (dangling_indices[i] == 1){
+                    W_prev += xprev[i];
                 }
             }
-            if (is_dangling){
-                W_prev += xprev[i];
-            }
+        }    
+
+        for (int i = 0; i < N; i++){
+                xcurr[i] = (1.0 - d) / N + d * W_prev / N;
+                for (int j = 0; j < N; j++){
+                    double adding_term = d * hyperlink_matrix[i][j] * xprev[j];
+                    xcurr[i] += adding_term;
+                }
         }
-        for (int i = 0; i < N; i++) {
-            xcurr[i] = (1.0 - d) / N + d * W_prev / N;
 
-            // Add contribution from non-dangling nodes
-            for (int j = 0; j < N; j++) {
-                xcurr[i] += d * hyperlink_matrix[i][j] * xprev[j];
-            }
 
-            // Track the maximum difference
+        diff = 0.0;
+        for (int i = 0; i < N; i++){
             double curr_diff = fabs(xcurr[i] - xprev[i]);
-            if (curr_diff > diff) {
+            if (curr_diff > diff){
                 diff = curr_diff;
             }
+            xprev[i] = xcurr[i]; //update xprev for next iteration
         }
 
-        // Swap xcurr and xprev for the next iteration
-        double *temp = xprev;
-        xprev = xcurr;
-        xcurr = temp;
-
-        iteration++;
+        free(dangling_indices);
+        iterations ++;
     }
 
     for (int i = 0; i < N; i++) {
         scores[i] = xprev[i];
     }
-
+    printf("Iterations: %d\n", iterations);
     free(xprev);
     free(xcurr);
 }
