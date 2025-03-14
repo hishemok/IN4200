@@ -7,7 +7,7 @@
 int main(){
     int N;
     double **hyperlink_matrix;
-    read_file_from_graph("small_webpage_graph.txt", &N, &hyperlink_matrix);
+    read_graph_from_file1("small_webpage_graph.txt", &N, &hyperlink_matrix);
 
 
     // Initialize PageRank parameters

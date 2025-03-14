@@ -4,7 +4,7 @@
 
 
 
-void read_file_from_graph(char *filename, int *N, double ***hyperlink_matrix){
+void read_graph_from_file1(char *filename, int *N, double ***hyperlink_matrix){
     FILE *file = fopen(filename, "r");
     if (file == NULL){
         printf("Error: Could not open file %s\n", filename);
