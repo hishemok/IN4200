@@ -49,7 +49,6 @@ void read_graph_from_file1(char *filename, int *N, double ***hyperlink_matrix){
             matrix[i][j] = 0.0;
         }
     }
-    printf("Default values set\n");
 
 
     rewind(file);
