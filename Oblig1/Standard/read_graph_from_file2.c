@@ -23,10 +23,9 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx,
         exit(1);
     }
     
-    char line[256]; // Increased buffer size
+    char line[256];
     int edges = 0;
     
-    // Find number of nodes
     while (fgets(line, sizeof(line), file) != NULL) {
         if (line[0] == '#') {
             char *temp_line = strstr(line, "Nodes:");

@@ -29,7 +29,7 @@ void find_dangling_pages_csr(int N, int *row_ptr, int *col_idx, double *val, int
     }
 }
 
-void PageRank_iterations2(int N, int *row_ptr, int *col_idx, double *val, double d, double epsilon, double *scores) {
+void PageRank_iterations2_omp(int N, int *row_ptr, int *col_idx, double *val, double d, double epsilon, double *scores) {
     printf("\n\nPageRank_iterations2 with CSR and OpenMP\n");
     
     // Allocate memory for PageRank vectors

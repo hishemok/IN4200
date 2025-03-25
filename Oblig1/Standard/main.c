@@ -1,46 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> //Printing message
 #include "function_declarations.h"
 
-int main() {
-    // Input handling (fixed buffer sizes)
-    char small_file_to_read[256];
-    char large_file_to_read[256];
-    double d;
-    double epsilon;
-    int n;
+void print_help(char *program_name) {
+    printf("\nUsage: %s  <small_graph> <large_graph> <damping> <epsilon> <top_n>\n", program_name);
+    printf("\nArguments:\n");
+    printf("  small_graph    Path to small webgraph file\n");
+    printf("  large_graph    Path to large webgraph file\n");
+    printf("  damping        Damping factor (0 < d < 1, typically 0.85)\n");
+    printf("  epsilon        Convergence threshold (e.g., 1e-8)\n");
+    printf("  top_n          Number of top pages to display\n");
+    printf("\nExamples:\n");
+    printf("  %s small.txt large.txt 0.85 1e-8 10\n", program_name);
+    exit(0);
+}
 
-    printf("Input:\n");
-    printf("1. Small file to read: ");
-    if (scanf("%255s", small_file_to_read) != 1) {
-        printf("Error reading filename\n");
+int main(int argc, char *argv[]) {
+
+    if (argc != 6) {
+        fprintf(stderr, "Error: Requires 4 arguments\n");
+        print_help(argv[0]);
+    }
+
+    char *small_file_to_read = argv[1];
+    char *large_file_to_read = argv[2];
+    double d = atof(argv[3]);
+    double epsilon = atof(argv[4]);
+    int n = atoi(argv[5]);
+
+
+    if (d <= 0 || d >= 1) {
+        printf("Error: Damping factor must be (0,1), got %f\n", d);
+        return 1;
+    }
+    if (epsilon <= 0) {
+        printf("Error: Epsilon must be positive, got %e\n", epsilon);
+        return 1;
+    }
+    if (n <= 0) {
+        printf("Error: top_n must be positive, got %d\n", n);
         return 1;
     }
 
-    printf("2. Large file to read: ");
-    if (scanf("%255s", large_file_to_read) != 1) {
-        printf("Error reading filename\n");
-        return 1;
-    }
-
-    printf("3. Damping factor (0-1): ");
-    if (scanf("%lf", &d) != 1 || d <= 0 || d >= 1) {
-        printf("Invalid damping factor\n");
-        return 1;
-    }
-
-    printf("4. Convergence threshold (0-1): ");
-    if (scanf("%lf", &epsilon) != 1 || epsilon <= 0 || epsilon >= 1) {
-        printf("Invalid epsilon\n");
-        return 1;
-    }
-
-    printf("5. Top n pages: ");
-    if (scanf("%d", &n) != 1 || n <= 0) {
-        printf("Invalid n\n");
-        return 1;
-    }
-    while (getchar() != '\n'); // Clear input buffer
+    printf("Config: d=%.2f, ε=%.0e, top_n=%d\n", d, epsilon, n);
 
     /***** Process Small Graph *****/
     printf("\n=== Processing small graph ===\n");
