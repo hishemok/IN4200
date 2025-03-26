@@ -63,7 +63,6 @@ void read_graph_from_file2(char *filename, int *N, int **row_ptr, int **col_idx,
     // Read edges with progress tracking
     int edge_count = 0;
     int line_count = 0;
-    int progress_marker = edges / 10; // Report progress every 10%
     
     rewind(file); // Go back to start of file
     

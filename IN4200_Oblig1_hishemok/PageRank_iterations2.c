@@ -27,7 +27,7 @@ void find_dangling_pages_csr(int N, int *row_ptr, int *col_idx, double *val, int
 }
 
 void PageRank_iterations2(int N, int *row_ptr, int *col_idx, double *val, double d, double epsilon, double *scores) {
-    printf("\nPageRank_iterations2 (Serial CSR Version)\n");
+    printf("\nPageRank_iterations2 (Serial CRS Version)\n");
     
     double *xprev = malloc(N * sizeof(double));
     double *xcurr = malloc(N * sizeof(double));
@@ -80,12 +80,14 @@ void PageRank_iterations2(int N, int *row_ptr, int *col_idx, double *val, double
         
         // Calculate convergence
         diff = 0.0;
+
         for (int i = 0; i < N; i++) {
             double curr_diff = fabs(xcurr[i] - xprev[i]);
             if (curr_diff > diff) {
                 diff = curr_diff;
             }
-            xprev[i] = xcurr[i]; // Update for next iteration
+            xprev[i] = xcurr[i]; 
+            
         }
         
         iterations++;

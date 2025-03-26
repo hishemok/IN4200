@@ -14,12 +14,11 @@ void read_graph_from_file1(char *filename, int *N, double ***hyperlink_matrix){
     char line[256];
     int edges;
 
-    //Find number of nodes
+    //Find number of nodes and edges
     while (fgets(line, sizeof(line), file) != NULL) {
         if (line[0] == '#') {
             // Search for "Nodes: x" and extract the value of x
             char *temp_line = strstr(line, "Nodes:");
-            // printf("temp_line: %s\n", temp_line);
             if (temp_line != NULL) {
                 sscanf(temp_line, "Nodes: %d   Edges: %d", N, &edges);
                 printf("Number of nodes found: %d\n", *N);
@@ -32,6 +31,7 @@ void read_graph_from_file1(char *filename, int *N, double ***hyperlink_matrix){
         }
     }
 
+    // Allocate memory & set initial values
     int *outgoings = (int *) malloc(*N * sizeof(int));
     if (outgoings == NULL) {
         printf("Error: Memory allocation failed for outgoings\n");
