@@ -73,7 +73,7 @@ void top_n_webpages_omp(int N, double *scores, int n) {
 
     // Print results
     for (int i = 0; i < n; i++) {
-        printf("%d. Webpage %d: %.6f\n", i+1, final_top_indices[i], final_top_scores[i]);
+        printf("%d. Webpage %d (Score: %.6f)\n", i+1, final_top_indices[i], final_top_scores[i]);
     }
 
     // Cleanup
