@@ -18,7 +18,8 @@ int main(int nargs, char **args) {
         printf("Error: All dimensions must be greater than 0.\n");
         return 1;
     }
-
+    
+    printf("\n____________________________________\n");
 
     double ***arr1;
     double ***arr2;

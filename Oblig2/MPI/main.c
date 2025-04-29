@@ -15,8 +15,10 @@ int main(int nargs, char **args) {
     int num_iter, kmax, jmax, imax;
 
     if (rank == 0){
+        printf("\n____________________________________\n");
+
         if (nargs != 5){
-            printf("Usage: %s <num_iter> <kmax> <jmax> <imax> <My_Rank> \n", args[0]);
+            printf("Usage: %s <num_iter> <kmax> <jmax> <imax>  \n", args[0]);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
         num_iter = atoi(args[1]);
@@ -70,19 +72,21 @@ int main(int nargs, char **args) {
     }
 
 
-  
+  //Running iterations
     for (int i = 0; i < num_iter; i++){    
-        GS_iteration_2_chunks(kmax, jmax, imax, my_array);
+        GS_iteration_2_chunks(kmax, jmax, imax, my_array); 
         GS_iteration_2_chunks_mpi(rank, kmax, my_jmax, imax, my_local_array);
     }
 
 
 
     if (rank == 0) {
-        int tag;
-        int destination = 1;
-        int count = imax;
+        int tag; //Create tag variable
+        int destination = 1; // Destination rank
+        int count = imax; // Number of elements to send
 
+
+        // Initalize the global array
         double ***global_phi = NULL;
         double ***incoming_array = NULL;
 
@@ -98,10 +102,10 @@ int main(int nargs, char **args) {
             }
         }
 
-     
-        for (int k = 0; k < kmax - 0; k++) {
-            for (int j = 0; j < jmax - 0; j++) {
-                for (int i = 0; i < imax - 0; i++) {
+        // Combine the two halves into the global array
+        for (int k = 0; k < kmax; k++) {
+            for (int j = 0; j < jmax; j++) {
+                for (int i = 0; i < imax; i++) {
                     if (j < my_jmax) {
                         global_phi[k][j][i] = my_local_array[k][j][i];
                     } else {
@@ -113,12 +117,12 @@ int main(int nargs, char **args) {
         }
 
 
-
+        // Print the global array
         double distance = euclidean_distance(kmax, jmax, imax, my_array, global_phi);
         printf("num iters=%d, kmax=%d, jmax=%d, imax=%d, diff=%g\n",
             num_iter, kmax, jmax, imax, distance);
 
-
+        // Free the allocated memory
         for (int k = 0; k < kmax; k++) {
             for (int j = 0; j < jmax; j++) {
                 free(global_phi[k][j]);
@@ -137,6 +141,7 @@ int main(int nargs, char **args) {
     }
     
     if (rank == 1) {
+        // Send the second half of the local array to rank 0
         int tag;
         int destination = 0;
         int count = imax;
@@ -149,12 +154,11 @@ int main(int nargs, char **args) {
         }
 
     }
-
+    // Free the allocated memory
 
     for (int k = 0; k < kmax; k++) {
         for (int j = 0; j < jmax; j++) {
             free(my_array[k][j]);
-            
         }
         free(my_array[k]);
     }

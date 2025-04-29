@@ -19,17 +19,11 @@ serial: $(SERIAL_SRCS)
 mpi: $(MPI_SRCS)
 	$(CC_PARALLEL) $(CFLAGS) -o $(MPI_BIN) $(MPI_SRCS)
 
-# Default run parameters:
-N = 10000
-N_k = 20
-N_j = 30
-N_i = 20
 
-
-run_serial: serial
-	./$(SERIAL_BIN) $(N) $(N_k) $(N_j) $(N_i)
-run_mpi: mpi
-	mpirun -np 2 ./$(MPI_BIN) $(N) $(N_k) $(N_j) $(N_i)
+serial_run: serial
+	./$(SERIAL_BIN) 100 100 5000 100
+mpi_run: mpi
+	mpirun -np 2 ./$(MPI_BIN) 100 100 5000 100
 clean:
 	rm -f $(SERIAL_BIN) $(MPI_BIN)
 
