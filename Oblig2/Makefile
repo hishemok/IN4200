@@ -21,9 +21,9 @@ mpi: $(MPI_SRCS)
 
 
 serial_run: serial
-	./$(SERIAL_BIN) 100 100 5000 100
+	./$(SERIAL_BIN) 100 100 500 100
 mpi_run: mpi
-	mpirun -np 2 ./$(MPI_BIN) 100 100 5000 100
+	mpirun -np 2 ./$(MPI_BIN) 100 100 500 100
 clean:
 	rm -f $(SERIAL_BIN) $(MPI_BIN)
 
